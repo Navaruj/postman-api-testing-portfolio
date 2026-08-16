@@ -1,0 +1,7 @@
+# macOS Finder metadata
+.DS_Store
+
+# Local Postman environments may contain credentials or access tokens.
+# Commit only the safe `*.example.postman_environment.json` file.
+environments/*[Dd]emo*.postman_environment.json
+environments/*[Ll]ocal*.postman_environment.json
