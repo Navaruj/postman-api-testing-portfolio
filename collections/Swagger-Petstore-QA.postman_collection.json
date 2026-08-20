@@ -1,0 +1,422 @@
+{
+  "info": {
+    "_postman_id": "328580e2-880c-4ec2-b45c-737a063d1c9a",
+    "name": "Swagger Petstore QA",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "56673147",
+    "_collection_link": "https://go.postman.co/collection/56673147-328580e2-880c-4ec2-b45c-737a063d1c9a?source=collection_link"
+  },
+  "item": [
+    {
+      "name": "PET-001 Create pet - Valid data",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "const responseBody = pm.response.json();",
+              "",
+              "pm.test(\"Status code is 200\", function () {",
+              "    pm.response.to.have.status(200);",
+              "});",
+              "",
+              "pm.test(\"Response Content-Type is JSON\", function () {",
+              "    const contentType = pm.response.headers.get(\"Content-Type\");",
+              "    pm.expect(contentType).to.include(\"application/json\");",
+              "});",
+              "",
+              "pm.test(\"Created pet data is correct\", function () {",
+              "    pm.expect(responseBody.id).to.be.a(\"number\");",
+              "    pm.expect(responseBody.name).to.eql(\"Petch QA Dog\");",
+              "    pm.expect(responseBody.photoUrls).to.include(",
+              "        \"https://example.com/images/petch-qa-dog.jpg\"",
+              "    );",
+              "    pm.expect(responseBody.status).to.eql(\"available\");",
+              "});",
+              "",
+              "pm.environment.set(\"petId\", String(responseBody.id));",
+              "",
+              "pm.test(\"Pet ID is saved to environment\", function () {",
+              "    pm.expect(pm.environment.get(\"petId\"))",
+              "        .to.eql(String(responseBody.id));",
+              "});"
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"id\": {{$timestamp}},\n  \"name\": \"Petch QA Dog\",\n  \"category\": {\n    \"id\": 1,\n    \"name\": \"Dogs\"\n  },\n  \"photoUrls\": [\n    \"https://example.com/images/petch-qa-dog.jpg\"\n  ],\n  \"tags\": [\n    {\n      \"id\": 1,\n      \"name\": \"portfolio\"\n    }\n  ],\n  \"status\": \"available\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{baseUrl}}/pet",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "pet"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "PET-002 Get pet by ID - Valid ID",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "const responseBody = pm.response.json();",
+              "",
+              "pm.test(\"Status code is 200\", function () {",
+              "    pm.response.to.have.status(200);",
+              "});",
+              "",
+              "pm.test(\"Response Content-Type is JSON\", function () {",
+              "    const contentType = pm.response.headers.get(\"Content-Type\");",
+              "    pm.expect(contentType).to.include(\"application/json\");",
+              "});",
+              "",
+              "pm.test(\"Returned pet ID matches requested pet ID\", function () {",
+              "    const expectedPetId = pm.environment.get(\"petId\");",
+              "",
+              "    pm.expect(String(responseBody.id))",
+              "        .to.eql(expectedPetId);",
+              "});",
+              "",
+              "pm.test(\"Returned pet data is correct\", function () {",
+              "    pm.expect(responseBody.name).to.eql(\"Petch QA Dog\");",
+              "    pm.expect(responseBody.status).to.eql(\"available\");",
+              "    pm.expect(responseBody.photoUrls).to.include(",
+              "        \"https://example.com/images/petch-qa-dog.jpg\"",
+              "    );",
+              "});"
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        }
+      ],
+      "protocolProfileBehavior": {
+        "disableBodyPruning": true
+      },
+      "request": {
+        "method": "GET",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{baseUrl}}/pet/{{petId}}",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "pet",
+            "{{petId}}"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "PET-003 Get pet by ID - Not found",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "const errorBody = pm.response.text();",
+              "",
+              "pm.test(\"Status code is 404\", function () {",
+              "    pm.response.to.have.status(404);",
+              "});",
+              "",
+              "pm.test(\"Error response contains a message\", function () {",
+              "    pm.expect(errorBody.trim()).to.not.be.empty;",
+              "});",
+              "",
+              "pm.test(\"Error response does not expose internal details\", function () {",
+              "    const normalizedError = errorBody.toLowerCase();",
+              "",
+              "    pm.expect(normalizedError).to.not.include(\"exception\");",
+              "    pm.expect(normalizedError).to.not.include(\"stack trace\");",
+              "});"
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        }
+      ],
+      "protocolProfileBehavior": {
+        "disableBodyPruning": true
+      },
+      "request": {
+        "method": "GET",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": ""
+        },
+        "url": {
+          "raw": "{{baseUrl}}/pet/{{unknownPetId}}",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "pet",
+            "{{unknownPetId}}"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "PET-004 Update pet - Change status to pending",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "const responseBody = pm.response.json();",
+              "",
+              "pm.test(\"Status code is 200\", function () {",
+              "    pm.response.to.have.status(200);",
+              "});",
+              "",
+              "pm.test(\"Updated pet ID matches requested pet ID\", function () {",
+              "    pm.expect(String(responseBody.id))",
+              "        .to.eql(pm.environment.get(\"petId\"));",
+              "});",
+              "",
+              "pm.test(\"Pet status changes to pending\", function () {",
+              "    pm.expect(responseBody.status).to.eql(\"pending\");",
+              "});",
+              "",
+              "pm.test(\"Pet data is preserved after update\", function () {",
+              "    pm.expect(responseBody.name).to.eql(\"Petch QA Dog\");",
+              "    pm.expect(responseBody.photoUrls).to.include(",
+              "        \"https://example.com/images/petch-qa-dog.jpg\"",
+              "    );",
+              "});"
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        }
+      ],
+      "request": {
+        "method": "PUT",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"id\": {{petId}},\n  \"name\": \"Petch QA Dog\",\n  \"category\": {\n    \"id\": 1,\n    \"name\": \"Dogs\"\n  },\n  \"photoUrls\": [\n    \"https://example.com/images/petch-qa-dog.jpg\"\n  ],\n  \"tags\": [\n    {\n      \"id\": 1,\n      \"name\": \"portfolio\"\n    }\n  ],\n  \"status\": \"pending\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{baseUrl}}/pet",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "pet"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "PET-005 Find pets by status - Pending",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "const pets = pm.response.json();",
+              "const expectedPetId = pm.environment.get(\"petId\");",
+              "",
+              "pm.test(\"Status code is 200\", function () {",
+              "    pm.response.to.have.status(200);",
+              "});",
+              "",
+              "pm.test(\"Response is an array of pets\", function () {",
+              "    pm.expect(pets).to.be.an(\"array\");",
+              "});",
+              "",
+              "pm.test(\"Every returned pet has pending status\", function () {",
+              "    const unexpectedPets = pets.filter(function (pet) {",
+              "        return pet.status !== \"pending\";",
+              "    });",
+              "",
+              "    pm.expect(unexpectedPets).to.have.lengthOf(0);",
+              "});",
+              "",
+              "pm.test(\"Updated pet appears in pending results\", function () {",
+              "    const petExists = pets.some(function (pet) {",
+              "        return String(pet.id) === expectedPetId;",
+              "    });",
+              "",
+              "    pm.expect(petExists).to.be.true;",
+              "});"
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        }
+      ],
+      "protocolProfileBehavior": {
+        "disableBodyPruning": true
+      },
+      "request": {
+        "method": "GET",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{baseUrl}}/pet/findByStatus?status=pending",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "pet",
+            "findByStatus"
+          ],
+          "query": [
+            {
+              "key": "status",
+              "value": "pending",
+              "type": "text"
+            }
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "PET-006 Delete pet - Valid ID",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "const responseBody = pm.response.text().toLowerCase();",
+              "",
+              "pm.test(\"Status code is 200\", function () {",
+              "    pm.response.to.have.status(200);",
+              "});",
+              "",
+              "pm.test(\"Delete response does not expose internal details\", function () {",
+              "    pm.expect(responseBody).to.not.include(\"exception\");",
+              "    pm.expect(responseBody).to.not.include(\"stack trace\");",
+              "});"
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        }
+      ],
+      "request": {
+        "method": "DELETE",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{baseUrl}}/pet/{{petId}}",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "pet",
+            "{{petId}}"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "PET-007 Verify deleted pet is not found",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "const errorBody = pm.response.text().trim().toLowerCase();",
+              "",
+              "pm.test(\"Status code is 404\", function () {",
+              "    pm.response.to.have.status(404);",
+              "});",
+              "",
+              "pm.test(\"Error response contains a message\", function () {",
+              "    pm.expect(errorBody).to.not.be.empty;",
+              "});",
+              "",
+              "pm.test(\"Error response does not expose internal details\", function () {",
+              "    pm.expect(errorBody).to.not.include(\"exception\");",
+              "    pm.expect(errorBody).to.not.include(\"stack trace\");",
+              "});"
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/pet/{{petId}}",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "pet",
+            "{{petId}}"
+          ]
+        }
+      },
+      "response": []
+    }
+  ]
+}
