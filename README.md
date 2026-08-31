@@ -39,6 +39,8 @@ The final negative test confirms the deleted pet is no longer available:
 - [Detailed Swagger Petstore test cases](docs/swagger-petstore-test-cases.md)
 - [Swagger Petstore API documentation](https://petstore3.swagger.io/)
 
+The detailed catalog documents the broader designed coverage. The executable Postman subset currently consists of `PET-001` through `PET-007`, which was run locally with 24 of 24 assertions passing.
+
 ### How to run
 
 1. Import `collections/Swagger-Petstore-QA.postman_collection.json` into Postman.
@@ -84,5 +86,6 @@ evidence/      Screenshots of local collection-run results
 ## Notes
 
 - This repository contains test assets and locally verified collection-run evidence; it does not claim CI execution or production-system testing.
+- The full Swagger Petstore catalog is test design and has not been executed as a complete set; only the identified seven-request lifecycle subset has recorded execution evidence.
 - The Swagger Petstore service is public and shared. Dynamic IDs help reduce collision with other users' test data.
 - Do not commit credentials, real access tokens, or other secrets to an environment file.

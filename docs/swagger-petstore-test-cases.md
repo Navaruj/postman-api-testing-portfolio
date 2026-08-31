@@ -11,9 +11,10 @@
 | Contract version inspected | `1.0.27` |
 | Test design date | 2026-08-19 |
 | Intended execution tool | Postman |
-| Current status | Test cases designed; not executed |
+| Full catalog status | Designed; not executed as a complete set |
+| Executed subset | `PET-001` through `PET-007`; local run passed 24/24 assertions |
 
-เอกสารนี้เป็น Test Case design เท่านั้น ยังไม่มีการส่ง request หรือสรุป Pass/Fail จากระบบจริง
+เอกสารนี้เป็น full Test Case catalog สำหรับออกแบบ coverage และยังไม่ได้ execute ครบทุกเคส อย่างไรก็ตาม subset `PET-001` ถึง `PET-007` ถูกสร้างเป็น Postman Collection และรันจริงใน local แล้ว โดย assertions ผ่าน 24/24 รายการ หลักฐานอยู่ในโฟลเดอร์ `evidence/`
 
 ## 2. Objective and Scope
 
